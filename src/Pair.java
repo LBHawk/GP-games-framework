@@ -17,7 +17,7 @@ public class Pair{
 
 	public void addX(){
 		this.x++;
-		System.out.println("Adding to x: " + x);
+		//System.out.println("Adding to x: " + x);
 	}
 
 	public void addY(){

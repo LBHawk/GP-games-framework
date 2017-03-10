@@ -25,7 +25,7 @@ public class GoGame extends Game{
 		ArrayList<Board> moves = new ArrayList<Board>();
 
 		// Add "pass" move (same board as input)
-		//moves.add(board);
+		moves.add(origBoard);
 
 		// Iterate through current board, replace an empty spot with the
 		// appropriate piece and add to moves
@@ -61,7 +61,10 @@ public class GoGame extends Game{
 					   System.out.println("======newBoard=====");
 					   */
 
-					moves.add(newBoard);
+					// Make sure move isn't a suicide
+					if(resolveBoard(newBoard, newBoard.getBoard().length, i, j, newBoard.getBoard()[i][j]).getBoard()[i][j] == newBoard.getBoard()[i][j]){
+						moves.add(newBoard);
+					}
 					//System.out.println("asdfasdf");
 					//moves.get(0).printBoard();
 					//newBoard.setBoard(board.getBoard());
@@ -90,37 +93,55 @@ public class GoGame extends Game{
 	}
 
 	@Override
-	public boolean gameFinished(Board board){
+	public boolean gameFinished(Board board, int moveNumber){
 		// TODO
 		// Need score implemented for more sophisticated way of determining
 		// if game is finished other than "no more possible moves"
 		// (This is an unrealistic end condition)
-		return (getPossibleMoves(board, true).size() == 0);
+		if(moveNumber > 250){
+			return true;
+		}
+		return ((getPossibleMoves(board, true).size() <= 1) && (getPossibleMoves(board, false).size() <= 1));
 	}
 
 	// Returns the score the playout results in
 	// We will handle whether the playout is a win or not in the agent
 	@Override
-	public double randomPlayout(Board board, boolean firstPlayer){
+	public int randomPlayout(Board board, boolean firstPlayer, int moveNumber){
 		boolean turn = firstPlayer; // Tracks which piece to play
 		Random r = new Random(); // For random selection
 
 		ArrayList<Board> moves = new ArrayList<Board>();
-		while(!gameFinished(board)){
+		while(!gameFinished(board, moveNumber)){
 			moves = getPossibleMoves(board, turn);
 			board = moves.get(r.nextInt(moves.size()));
 
 			turn = !turn;
+			moveNumber++;
 		}
 
 		return calculateScore(board);
 	}
 
 	@Override
-	public double calculateScore(Board board){
+	public int calculateScore(Board board){
 		// TODO
-		// implement this
-		return 0.0;
+		// Figure out a way to do area scoring effectively
+		int score = 0;
+		int length = board.getBoard().length;
+		for(int i = 0; i < length; i++){
+			for(int j = 0; j < length; j++){
+				if(board.getBoard()[i][j] == 'X'){
+					score++;
+				}
+
+				if(board.getBoard()[i][j] == 'O'){
+					score--;
+				}
+			}
+		}
+
+		return score;
 	}
 
 	// "Resolves" the board.  That is, uses a flood-fill-esque algo to 
@@ -129,8 +150,6 @@ public class GoGame extends Game{
 	// of board) with no gaps
 	@Override
 	public Board resolveBoard(Board board, int boardSize){
-		//TODO
-		//return board;
 
 		Board newBoard = new Board(boardSize);
 		newBoard.setBoard(board.getBoard());
@@ -140,7 +159,7 @@ public class GoGame extends Game{
 			for(int j = 0; j < boardSize; j++){
 				// If we find a non-empty space, attempt to resolve it.
 				if(newBoard.getBoard()[i][j] != '-'){
-					System.out.println("Resolving (" + i +", " + j + ")");
+					//System.out.println("Resolving (" + i +", " + j + ")");
 					newBoard.setBoard(this.resolveBoard(newBoard, boardSize, i, j, board.getBoard()[i][j]).getBoard());
 				}
 			}
@@ -168,7 +187,7 @@ public class GoGame extends Game{
 			endChar = 'X';
 		}
 
-		System.out.println("ENDCHAR: " + endChar);
+		//System.out.println("ENDCHAR: " + endChar);
 
 		// Queue holds the pieces we have visited and need to expand on
 		Queue<Pair> queue = new Queue<Pair>();
@@ -202,7 +221,7 @@ public class GoGame extends Game{
 			while(e.getX() < boardSize && board.getBoard()[e.getX()][e.getY()] != endChar){
 				// If we find an empty spot, doesn't need to be resolved
 				if(board.getBoard()[e.getX()][e.getY()] == '-'){
-					System.out.println("LINE 205");
+					//System.out.println("LINE 205");
 					return board;
 				}
 				e.addX();
@@ -211,7 +230,7 @@ public class GoGame extends Game{
 
 			// Iterate through all nodes between w,e on x-axis.
 			while(w.getX() <= e.getX()){
-				System.out.println("looping: (" + w.getX() + ", " + w.getY() + ")");
+				//System.out.println("looping: (" + w.getX() + ", " + w.getY() + ")");
 				resolvedBoard[w.getX()][w.getY()] = '-';
 				
 				// Ensure we don't get an indexOOB
@@ -242,9 +261,9 @@ public class GoGame extends Game{
 		Board newBoard = new Board(boardSize);
 		newBoard.setBoard(resolvedBoard);
 
-		System.out.println("------RESOLVED--------");
-		newBoard.printBoard();
-		System.out.println("------RESOLVED--------");
+		//System.out.println("------RESOLVED--------");
+		//newBoard.printBoard();
+		//System.out.println("------RESOLVED--------");
 
 		return newBoard;
 

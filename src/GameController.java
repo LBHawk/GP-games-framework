@@ -59,7 +59,7 @@ public class GameController{
 						  	break;
 			case "random": 	firstPlayer = new RandomAgent(gameType, false);
 							break;
-			case "mcts": 	//firstPlayer = new MCTSAgent(game, true);
+			case "mcts": 	firstPlayer = new MCTSAgent(gameType, false);
 							break;
 		}
 
@@ -68,7 +68,7 @@ public class GameController{
 						  	break;
 			case "random": 	secondPlayer = new RandomAgent(gameType, true);
 							break;
-			case "mcts": 	//secondPlayer = new MCTSAgent(game, true);
+			case "mcts": 	secondPlayer = new MCTSAgent(gameType, true);
 							break;
 		}
 
@@ -94,6 +94,7 @@ public class GameController{
 		turn = true; 					// First player's turn to start (first player is X)
 		*/
 
+		int moveNumber = 0;
 		while(!gameOver){
 			gameBoard.printBoard();
 			//Board boardCopy = new Board(gameBoard.getSize());
@@ -104,9 +105,9 @@ public class GameController{
 					play = s.next(); 	// Get input from console
 					playPiece(play, gameBoard);
 				}else{
-					System.out.println("!!!!!!!!!");
+					//System.out.println("!!!!!!!!!");
 					Board theBoard = new Board(gameBoard.getSize());
-					theBoard = firstPlayer.makeMove(gameBoard, timeAllowed);
+					theBoard = firstPlayer.makeMove(gameBoard, timeAllowed, moveNumber);
 					gameBoard.setBoard(theBoard.getBoard());
 					turn = !turn;
 					System.out.println("turn done");
@@ -119,9 +120,10 @@ public class GameController{
 					playPiece(play, gameBoard);
 				}else{
 					Board theBoard = new Board(gameBoard.getSize());
-					theBoard = secondPlayer.makeMove(gameBoard, timeAllowed);
+					theBoard = secondPlayer.makeMove(gameBoard, timeAllowed, moveNumber);
 					gameBoard.setBoard(theBoard.getBoard());
 					turn = !turn;
+					System.out.println("turn done");
 				}
 			}
 			
@@ -129,7 +131,14 @@ public class GameController{
 			resolvedBoard.setBoard(game.resolveBoard(gameBoard, boardSize).getBoard());
 
 			gameBoard.setBoard(resolvedBoard.getBoard());
+
+			moveNumber++;
+			if(game.gameFinished(gameBoard, moveNumber)){ gameOver = true; }
+			System.out.println("Score: " + game.calculateScore(gameBoard));
 		}
+
+		System.out.println("Game took " + moveNumber + " moves.");
+		gameBoard.printBoard();		
 	}
 
 	public static boolean checkInput(String in){
@@ -148,6 +157,8 @@ public class GameController{
 		}catch(NumberFormatException e){
 			return false;
 		}
+
+		
 
 		//		System.out.println("Good input");
 		return true;

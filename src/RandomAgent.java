@@ -23,7 +23,7 @@ public class RandomAgent extends GameAgent{
 	}
 
 	@Override
-	protected Board makeMove(Board board, int timeAllowed){
+	protected Board makeMove(Board board, int timeAllowed, int moveNumber){
 		//System.out.println("makeMove");
 		ArrayList<Board> moves = new ArrayList<Board>();
 		System.out.println(board.getBoard()[0][0] + "" + firstPlayer);

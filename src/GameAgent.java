@@ -20,7 +20,7 @@ public abstract class GameAgent{
 		this.r = new Random();
 	}
 
-	protected abstract Board makeMove(Board board, int timeAllowed);
+	protected abstract Board makeMove(Board board, int timeAllowed, int moveNumber);
 	
 	// Checks the integrity of the move made (Only 0 or 1 pieces placed)
 	protected boolean checkMoveIntegrity(Board first, Board second){

@@ -20,13 +20,13 @@ public abstract class Game{
 	}
 	
 	//Is the game complete for the given board
-	abstract boolean gameFinished(Board board);
+	abstract boolean gameFinished(Board board, int moveNumber);
 
 	// Returns score of a random playout
-	abstract double randomPlayout(Board board, boolean firstPlayer);
+	abstract int randomPlayout(Board board, boolean firstPlayer, int moveNumber);
 
 	// Calculate score of the game (may not be applicable for all games)
-	abstract double calculateScore(Board board);
+	abstract int calculateScore(Board board);
 
 	Board resolveBoard(Board board, int boardSize){
 		return board;

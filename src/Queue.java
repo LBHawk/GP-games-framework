@@ -2,13 +2,13 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class Queue<Item> implements Iterable<Item>{
-	private Node<Item> first;    // beginning of queue
-	private Node<Item> last;     // end of queue
+	private QNode<Item> first;    // beginning of queue
+	private QNode<Item> last;     // end of queue
 	private int n;               // number of elements on queue
 
-	private static class Node<Item> {
+	private static class QNode<Item> {
 		private Item item;
-		private Node<Item> next;
+		private QNode<Item> next;
 	}
 
 	public Queue(){
@@ -31,8 +31,8 @@ public class Queue<Item> implements Iterable<Item>{
 	}
 
 	public void enqueue(Item item) {
-		Node<Item> oldlast = last;
-		last = new Node<Item>();
+		QNode<Item> oldlast = last;
+		last = new QNode<Item>();
 		last.item = item;
 		last.next = null;
 		if (isEmpty()){
@@ -60,9 +60,9 @@ public class Queue<Item> implements Iterable<Item>{
     }
 
     private class ListIterator<Item> implements Iterator<Item> {
-        private Node<Item> current;
+        private QNode<Item> current;
 
-        public ListIterator(Node<Item> first) {
+        public ListIterator(QNode<Item> first) {
             current = first;
         }
 
