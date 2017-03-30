@@ -2,12 +2,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.io.IOException;
 
 public class Node implements Comparable<Node>{
 	public double score;
 	public double games;
 	public ArrayList<Node> unvisitedChildren;
 	public ArrayList<Node> children;
+	public ArrayList<Node> prunedChildren;
 	public Node parent;
 	public Board b;
 	public boolean firstPlayer;
@@ -19,6 +21,7 @@ public class Node implements Comparable<Node>{
 	 */
 	public Node(Board b, boolean firstPlayer) {
 		children = new ArrayList<Node>();
+		prunedChildren = new ArrayList<Node>();
 		this.firstPlayer = firstPlayer;
 		score = 0.0;
 		this.b = b;
@@ -63,11 +66,12 @@ public class Node implements Comparable<Node>{
 	 * @param scr
 	 */
 	public void backPropagateScore(double scr) {
-		this.games++;
+		this.games ++;
 		this.score += scr;
 
-		if (parent != null)
+		if (parent != null){
 			parent.backPropagateScore(scr);
+		}
 	}
 
 	/**
@@ -81,6 +85,38 @@ public class Node implements Comparable<Node>{
 			Node tempState = new Node(legalMoves.get(i), this);
 			unvisitedChildren.add(tempState);
 		}
+	}
+
+	public void prune(ArrayList<Integer> indices){
+		// Sort the indices in decreasing order
+		int temp;
+        for (int i = 1; i < indices.size(); i++) {
+            for(int j = i ; j > 0 ; j--){
+                if(indices.get(j) > indices.get(j-1)){
+                    temp = indices.get(j);
+                    indices.set(j, indices.get(j-1));
+                    indices.set(j-1, temp);
+                }
+            }
+        }
+
+		/*
+		System.out.println("Sorted indices:");
+        for(int i = 0; i < indices.size(); i++){
+        	System.out.print(indices.get(i) + ", ");
+		}
+
+		try{ System.in.read(); }catch(IOException e){}
+		*/
+
+		System.out.println("pruning " + indices.size() + " moves out of "
+				+ unvisitedChildren.size() + " possibilities");
+
+		// Remove the children at each index we are given
+		for(int i = indices.size() - 1; i >= 0; i--){
+			prunedChildren.add(unvisitedChildren.remove(i));
+		}
+
 	}
 
 	@Override

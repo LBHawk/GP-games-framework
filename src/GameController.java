@@ -15,6 +15,7 @@ public class GameController{
 	static boolean gameOver; 			// Is the game over?
 	static boolean turn; 				// Which player's turn is it
 	static int timeAllowed; 			// How long do agent's have to make a move
+	static final boolean KILLHUMANS = false; // !!!!DO NOT CHANGE!!!!
 
 	public static void main(String [] args){
 		// Parse commands with JCommander
@@ -54,12 +55,23 @@ public class GameController{
 		firstPlayerHuman = false;
 		secondPlayerHuman = false;
 
+		boardSize = input.getBoardSize();
+		gameBoard = new Board(boardSize);
+
 		switch(agent1){
 			case "human":	firstPlayerHuman = true;
 						  	break;
 			case "random": 	firstPlayer = new RandomAgent(gameType, false);
 							break;
 			case "mcts": 	firstPlayer = new MCTSAgent(gameType, false);
+							break;
+			case "ann": 	firstPlayer = new ANNAgent(gameType, false);
+							firstPlayer.setNetwork(boardSize);
+							break;
+			case "ga": 		firstPlayer = new GAAgent(gameType, false);
+							break;
+			case "neat": 	firstPlayer = new NEATAgent(gameType, false);
+							firstPlayer.setNetwork(boardSize);
 							break;
 		}
 
@@ -70,10 +82,16 @@ public class GameController{
 							break;
 			case "mcts": 	secondPlayer = new MCTSAgent(gameType, true);
 							break;
+			case "ann": 	secondPlayer = new ANNAgent(gameType, true);
+							secondPlayer.setNetwork(boardSize);
+							break;
+			case "ga": 		secondPlayer = new GAAgent(gameType, true);
+							break;
+			case "neat": 	secondPlayer = new NEATAgent(gameType, true);
+							secondPlayer.setNetwork(boardSize);
+							break;
 		}
 
-		boardSize = input.getBoardSize();
-		gameBoard = new Board(boardSize);
 		gameOver = false;
 		turn = true; 	// Tracks which player's turn it is
 		timeAllowed = input.getTimeAllowed();
@@ -81,6 +99,17 @@ public class GameController{
 		// For human input
 		Scanner s = new Scanner(System.in);
 		String play;
+
+		// For saving the game data
+		boolean saveData = input.getRecord();
+		File output = null;
+		FileWriter fw = null;
+		File output2 = null;
+		File output3 = null;
+		FileWriter itFirstfw = null;
+		FileWriter itSecondfw = null;
+
+		List<FileWriter> fws = new ArrayList<FileWriter>();
 		
 		//----- Done initializing-----
 
@@ -93,6 +122,35 @@ public class GameController{
 		gameOver = false;
 		turn = true; 					// First player's turn to start (first player is X)
 		*/
+
+		// Initialize the output file if needed
+		if(saveData){
+			try{
+				String dir = "/home/h/hawkl/Documents/Thesis/thesis-code-hawkl/src/data/";
+				String filePath = dir +"SCORES"+ timeAllowed + gameType + boardSize + agent1 + agent2 + ".csv";
+				output = new File(filePath);
+				fw = new FileWriter(output, true);
+				//bw = new BufferedWriter(fw);
+				//
+				String filePath2 = dir + "ITS" + timeAllowed + gameType + boardSize + agent1 + ".csv";
+				output2 = new File(filePath2);
+				itFirstfw = new FileWriter(output2, true);
+
+				String filePath3 = dir + "ITS" + timeAllowed + gameType + boardSize + agent2 + ".csv";
+				output3 = new File(filePath3);
+				itSecondfw = new FileWriter(output3, true);
+
+				fws.add(fw);
+				fws.add(itFirstfw);
+				fws.add(itSecondfw);
+
+				//fws.get(1).write("TEST");
+				//	fws.get(2).write("TEST");
+			}catch(IOException e){
+				e.printStackTrace();
+				System.exit(-1);
+			}
+		}
 
 		int moveNumber = 0;
 		while(!gameOver){
@@ -111,6 +169,18 @@ public class GameController{
 					gameBoard.setBoard(theBoard.getBoard());
 					turn = !turn;
 					System.out.println("turn done");
+
+					String toWrite = moveNumber + " " + secondPlayer.getIterations() + "\n";
+
+					try{
+						System.out.println(toWrite);
+						fws.get(1).write(toWrite);
+						fws.get(1).flush();
+						System.out.println("WROTE");
+					}catch(IOException e){
+						e.printStackTrace();
+						System.exit(-1);
+					}
 				}
 
 			}else{
@@ -124,6 +194,18 @@ public class GameController{
 					gameBoard.setBoard(theBoard.getBoard());
 					turn = !turn;
 					System.out.println("turn done");
+
+					String toWrite = moveNumber + " " + secondPlayer.getIterations() + "\n";
+					
+					try{
+						System.out.println(toWrite);
+						fws.get(2).write(toWrite);
+						fws.get(2).flush();
+						System.out.println("WROTE");
+					}catch(IOException e){
+						e.printStackTrace();
+						System.exit(-1);
+					}
 				}
 			}
 			
@@ -134,7 +216,30 @@ public class GameController{
 
 			moveNumber++;
 			if(game.gameFinished(gameBoard, moveNumber)){ gameOver = true; }
-			System.out.println("Score: " + game.calculateScore(gameBoard));
+			int gameScore = game.calculateScore(gameBoard);
+			System.out.println("Score: " + gameScore);
+
+			try{
+				fws.get(0).write(gameScore + " ");
+				fws.get(0).flush();
+			}catch(IOException e){
+				e.printStackTrace();
+			}
+		}
+
+
+		try{
+			fws.get(0).write("\n");
+			fws.get(0).flush();
+			fws.get(0).close();
+			//fws.get(1).write("\n");
+			fws.get(1).flush();
+			fws.get(1).close();
+			//fws.get(2).write("\n");
+			fws.get(2).flush();
+			fws.get(2).close();
+		}catch(IOException e){
+			e.printStackTrace();
 		}
 
 		System.out.println("Game took " + moveNumber + " moves.");

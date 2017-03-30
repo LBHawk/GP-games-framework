@@ -20,11 +20,16 @@ public class JCommanderInput {
 		private String game = "go";
 
 	@Parameter(names = { "--time", "-t"}, description = "How long agents have to make a move")
-		private int timeAllowed = 3;
+		private int timeAllowed = 3000;
 
 	@Parameter(names = "--help", description = "Display usage info)")
 		private boolean help = false;
+	@Parameter(names = "--record", description = "Save the game data to a file")
+		private boolean record = false;
 
+	public boolean getRecord(){
+		return record;
+	}
 	public String getAgent1(){
 		return agent1;
 	}

@@ -27,19 +27,6 @@ public class GoGame extends Game{
 		// Add "pass" move (same board as input)
 		moves.add(origBoard);
 
-		// Iterate through current board, replace an empty spot with the
-		// appropriate piece and add to moves
-		//Board newBoard;
-		/*char[][] origCharArray = new char[board.getSize()][board.getSize()];
-		//origCharArray = board.getBoard();
-
-		for(int i = 0; i < board.getSize(); i++){
-		for(int j = 0; j < board.getSize(); j++){
-		origCharArray[i][j] = board.getBoard()[i][j];
-		}
-		}
-		*/
-
 		for(int i = 0; i < board.getSize(); i++){
 			for(int j = 0; j < board.getSize(); j++){
 				if(board.getBoard()[i][j] == '-'){
@@ -52,42 +39,15 @@ public class GoGame extends Game{
 					// reset board to keep looking for moves
 					newBoard.putPiece(i,j,!firstPlayer);
 
-					/*
-					   System.out.println("======origBoard=====");
-					   origBoard.printBoard();
-					   System.out.println("======origBoard=====");
-					   System.out.println("======newBoard=====");
-					   newBoard.printBoard();
-					   System.out.println("======newBoard=====");
-					   */
-
-					// Make sure move isn't a suicide
+					// Make sure move isn't a suicide.
 					if(resolveBoard(newBoard, newBoard.getBoard().length, i, j, newBoard.getBoard()[i][j]).getBoard()[i][j] == newBoard.getBoard()[i][j]){
 						moves.add(newBoard);
 					}
-					//System.out.println("asdfasdf");
-					//moves.get(0).printBoard();
-					//newBoard.setBoard(board.getBoard());
-					//newBoard.printBoard();
-					//try{ System.in.read(); } catch(IOException e){}
+					
 				}
 			}
 		}
 
-		/*
-		   System.out.println("----------");
-		   for(int i = 0; i < board.getSize(); i++){
-		   for(int j = 0; j < board.getSize(); j++){
-		   System.out.print(origCharArray[i][j]);
-		   }
-		   System.out.println();
-		   }
-		   System.out.println("----------");
-		   */
-
-		//System.out.println("asdfasdf");
-		//moves.get(3).printBoard();
-		//System.out.println(moves.size());
 		return moves;
 
 	}
@@ -98,7 +58,7 @@ public class GoGame extends Game{
 		// Need score implemented for more sophisticated way of determining
 		// if game is finished other than "no more possible moves"
 		// (This is an unrealistic end condition)
-		if(moveNumber > 250){
+		if(moveNumber >= 250){
 			return true;
 		}
 		return ((getPossibleMoves(board, true).size() <= 1) && (getPossibleMoves(board, false).size() <= 1));
@@ -114,13 +74,41 @@ public class GoGame extends Game{
 		ArrayList<Board> moves = new ArrayList<Board>();
 		while(!gameFinished(board, moveNumber)){
 			moves = getPossibleMoves(board, turn);
+			//System.out.println(moves.size());
 			board = moves.get(r.nextInt(moves.size()));
+			board = resolveBoard(board, board.getSize());
 
 			turn = !turn;
 			moveNumber++;
+			//System.out.println("!!!!!!!!!!!!!");
+			//board.printBoard();
 		}
 
+		//System.out.println("randomPlay done");
+
 		return calculateScore(board);
+	}
+
+	// Returns a board state that occurs after X random moves
+	// Used for training our networks
+	@Override
+	public Board randomBoardAfterXMoves(int boardSize, int numMoves){
+		Board board = new Board(boardSize);
+		boolean turn = false;
+		Random r = new Random();
+		int moveNum = 0;
+
+		ArrayList<Board> moves = new ArrayList<Board>();
+		while(moveNum < numMoves){
+			moves = getPossibleMoves(board, turn);
+			board = moves.get(r.nextInt(moves.size()));
+			board = resolveBoard(board, board.getSize());
+
+			turn = !turn;
+			moveNum++;
+		}
+
+		return board;
 	}
 
 	@Override
@@ -161,6 +149,7 @@ public class GoGame extends Game{
 				if(newBoard.getBoard()[i][j] != '-'){
 					//System.out.println("Resolving (" + i +", " + j + ")");
 					newBoard.setBoard(this.resolveBoard(newBoard, boardSize, i, j, board.getBoard()[i][j]).getBoard());
+
 				}
 			}
 		}

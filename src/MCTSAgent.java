@@ -7,10 +7,13 @@ public class MCTSAgent extends GameAgent{
 	private Game game;
 	private boolean firstPlayer;
 	private Random r;
-	private double explorationConstant = Math.sqrt(2.0);
+	private double explorationConstant = Math.sqrt(2);
+	private String gameType;
+	private int iterations;
 
 	public MCTSAgent(String game, boolean firstPlayer){
 		super(game, firstPlayer);
+		gameType = game;
 		switch(game){
 			case "go": 		this.game = new GoGame();
 							System.out.println("made go game in agent");
@@ -22,7 +25,17 @@ public class MCTSAgent extends GameAgent{
 		}
 		r = new Random();
 		this.firstPlayer = firstPlayer;
+		/*if(this.firstPlayer){
+			explorationConstant = Math.sqrt(2.0);
+		}else{
+			explorationConstant = 2 * Math.sqrt(2.0);
+		}*/
 		System.out.println("MCTS const");
+	}
+
+	@Override
+	protected int getIterations(){
+		return this.iterations;
 	}
 
 	@Override
@@ -32,7 +45,7 @@ public class MCTSAgent extends GameAgent{
 		Board bestMoveFound = null;
 
 		long startTime = System.currentTimeMillis();
-		int iterations = 0;
+		this.iterations = 0;
 
 		while(System.currentTimeMillis() - startTime < timeAllowed){
 			select(rootNode, moveNumber);
@@ -45,7 +58,7 @@ public class MCTSAgent extends GameAgent{
 		double bestScore = Double.NEGATIVE_INFINITY;
 		ArrayList<Node> bestNodes = new ArrayList<Node>();
 		for(Node n : rootNode.children){
-			double tempBest = n.upperConfidenceBound(explorationConstant);
+			double tempBest = n.score / n.games;
 
 			if (tempBest > bestScore) {
 				bestNodes.clear();
@@ -60,11 +73,25 @@ public class MCTSAgent extends GameAgent{
 		}
 
 		Node move = bestNodes.get(r.nextInt(bestNodes.size()));
-		//System.out.println("about to return board");
+		System.out.println("+++++++ " + (move.score / move.games) + " / " + move.games);
 		return move.b;
 	}
 
-	private void select(Node currentNode, int moveNumber) {
+	// FOR TRAINING PURPOSES
+	@Override
+	protected double estimateNodesScore(Board board, int iterations, int moveNumber){
+		Node root = new Node(board, firstPlayer);
+
+		for(int i = 0; i < iterations; i++){
+			select(root, moveNumber);
+			//System.out.println("~" + i);
+		}
+
+		return (root.upperConfidenceBound(explorationConstant) + 20) / 40;
+	}
+
+	@Override
+	protected void select(Node currentNode, int moveNumber) {
 		//System.out.println("In Select");
 		// Begin tree policy. Traverse down the tree and expand. Return
 		// the new node or the deepest node it could reach. Return too
@@ -81,23 +108,43 @@ public class MCTSAgent extends GameAgent{
 		//System.out.println("children size: " + foundNode.children.size());
 
 		// Run a random playout from the found node until the end of the game.
+		//System.out.println("starting playout");
 		double score = game.randomPlayout(foundNode.b, !foundNode.firstPlayer, moveNumber);
 		// If the agent is player 2, negative scores are good for p2
 		if(this.firstPlayer){
 			score = score * -1;
 		}
 
+		// Set score to 1 for win, 0 for loss, 0.5 for draw for use in UCT
+		/*if(score > 0){
+			score = 1;
+		}else if (score < 0){
+			score = 0;
+		}else{
+			score = 0.5;
+		}*/
+
+		
+		int size = foundNode.b.getSize();
+		score += (size * size);
+		score = score / (size * size * 2);
+		
+
+		//System.out.println("backprop start");
+
+
 		// Backpropagate results of playout.
 		foundNode.backPropagateScore(score);
 	}
-
-
-	//TODO TREE POLICY !!!!!!!
 
 	private Node treePolicy(Node node) {
 		//System.out.println("In treePolicy");
 		if (node.unvisitedChildren == null) {
 			node.expandNode(node.b, game.getPossibleMoves(node.b, node.firstPlayer));
+		}
+
+		if(!node.unvisitedChildren.isEmpty()){
+			return node;
 		}
 
 		ArrayList<Node> bestNodes = new ArrayList<Node>();
@@ -159,5 +206,10 @@ public class MCTSAgent extends GameAgent{
 	@Override
 	protected boolean checkMoveIntegrity(Board first, Board second){
 		return super.checkMoveIntegrity(first, second);
+	}
+
+	@Override
+	protected void setNetwork(int boardSize){
+
 	}
 }

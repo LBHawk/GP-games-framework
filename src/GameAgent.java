@@ -4,6 +4,7 @@ public abstract class GameAgent{
 	private Game game;
 	private boolean firstPlayer;
 	private Random r;
+	public int iterations;
 
 	public GameAgent(String game, boolean firstPlayer){
 		switch(game){
@@ -20,7 +21,10 @@ public abstract class GameAgent{
 		this.r = new Random();
 	}
 
+	protected abstract void select(Node currentNode, int moveNumber);	
+	protected abstract void setNetwork(int boardSize);
 	protected abstract Board makeMove(Board board, int timeAllowed, int moveNumber);
+	protected abstract double estimateNodesScore(Board board, int iterations, int moveNumber);
 	
 	// Checks the integrity of the move made (Only 0 or 1 pieces placed)
 	protected boolean checkMoveIntegrity(Board first, Board second){
@@ -37,4 +41,6 @@ public abstract class GameAgent{
 
 		return true;
 	}
+
+	protected abstract int getIterations();
 }

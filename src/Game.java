@@ -28,6 +28,8 @@ public abstract class Game{
 	// Calculate score of the game (may not be applicable for all games)
 	abstract int calculateScore(Board board);
 
+	abstract Board randomBoardAfterXMoves(int boardsize, int moves);
+
 	Board resolveBoard(Board board, int boardSize){
 		return board;
 	}
