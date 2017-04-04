@@ -6,4 +6,8 @@
 %   *******************************************************************
 %
 \chapter{Experimental Results}\label{ch:implem}
-Another possible chapter title: Experimental Results
+Our experiments consisted of having every agent play one another multiple times on different sized boards of each game under different time allowances.  Each pair of agents played games on 5x5, 7x7, 9x9, 11x11, and 13x13 Go as well as 9x9, 11x11, and 14x14 Hex.  For each of these gametypes, 20 games were played with time allowances of 500ms, 1000ms, 2000ms, 4000ms, and 8000ms.  The different board sizes provide different branching factors (e.g. 13x13 Go has a much higher branching factor than 7x7 Go), while the different time allowances allow for each agent to run through more iterations of MCTS on each turn.  In the course of our experiments, we were able to uncover several interesting performance trends.
+
+This chapter is organized by game; there is one section covering the reseults from the Go gameplay, and another on the results from the Hex gameplay.  In each section, we first briefly note the agents' performance against the trivial \texttt{RandomAgent}, then overview the results from each agent's games against \texttt{MCTSAgent}, and then finally look at the head-to-head games between the experimental agents.  Note that due to the size and number of our data visualizations, we will often cite Appendix \ref{appa:data}, which houses all of our data visualizations in full, when referencing data.  While most of the full visualizations will not be in this chapter, some small snippets may be included.
+
+\section{Go}

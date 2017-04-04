@@ -24,3 +24,10 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {A.1}{\ignorespaces \texttt {ANNAgent} vs \texttt {MCTSAgent} Go scores by board size and time allowance\relax }}{53}
+\contentsline {figure}{\numberline {A.2}{\ignorespaces \texttt {GAAgent} vs \texttt {MCTSAgent} Go scores by board size and time allowance\relax }}{54}
+\contentsline {figure}{\numberline {A.3}{\ignorespaces \texttt {GAAgent} vs \texttt {ANNAgent} Go scores by board size and time allowance\relax }}{55}
+\contentsline {figure}{\numberline {A.4}{\ignorespaces \texttt {MCTSAgent} vs \texttt {RandomAgent} Go scores by board size and time allowance\relax }}{56}
+\contentsline {figure}{\numberline {A.5}{\ignorespaces \texttt {ANNAgent} vs \texttt {RandomAgent} Go scores by board size and time allowance\relax }}{57}
+\contentsline {figure}{\numberline {A.6}{\ignorespaces \texttt {GAAgent} vs \texttt {RandomAgent} Go scores by board size and time allowance\relax }}{58}
+\addvspace {10\p@ }

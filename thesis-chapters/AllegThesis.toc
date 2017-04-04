@@ -21,12 +21,14 @@
 \contentsline {subsection}{\numberline {3.2.3}GAAgent}{40}
 \contentsline {subsection}{\numberline {3.2.4}NEATAgent}{44}
 \contentsline {section}{\numberline {3.3}Games Framework}{45}
-\contentsline {section}{\numberline {3.4}Experiments}{47}
+\contentsline {section}{\numberline {3.4}Experimental Design}{47}
 \contentsline {section}{\numberline {3.5}Threats to Validity}{48}
-\contentsline {chapter}{\numberline {4}Experimental Results}{49}
-\contentsline {chapter}{\numberline {5}Discussion and Future Work}{50}
-\contentsline {section}{\numberline {5.1}Summary of Results}{50}
-\contentsline {section}{\numberline {5.2}Future Work}{50}
-\contentsline {section}{\numberline {5.3}Conclusion}{50}
-\contentsline {chapter}{\numberline {A}Java Code}{51}
-\contentsline {chapter}{Bibliography}{178}
+\contentsline {chapter}{\numberline {4}Experimental Results}{50}
+\contentsline {section}{\numberline {4.1}Go}{50}
+\contentsline {chapter}{\numberline {5}Discussion and Future Work}{51}
+\contentsline {section}{\numberline {5.1}Summary of Results}{51}
+\contentsline {section}{\numberline {5.2}Future Work}{51}
+\contentsline {section}{\numberline {5.3}Conclusion}{51}
+\contentsline {chapter}{\numberline {A}Data Visualizations}{52}
+\contentsline {chapter}{\numberline {B}Java Code}{59}
+\contentsline {chapter}{Bibliography}{186}
