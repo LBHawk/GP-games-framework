@@ -12,7 +12,7 @@ public class RandomAgent extends GameAgent{
 			case "go": 		this.game = new GoGame();
 							System.out.println("made go game in agent");
 							break;
-			case "hex": 	//this.game = new HexGame();
+			case "hex": 	this.game = new HexGame();
 							break;
 			case "sprouts":	//this.game = new SproutsGame();
 							break;

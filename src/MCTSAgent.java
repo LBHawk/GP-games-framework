@@ -18,7 +18,7 @@ public class MCTSAgent extends GameAgent{
 			case "go": 		this.game = new GoGame();
 							System.out.println("made go game in agent");
 							break;
-			case "hex": 	//this.game = new HexGame();
+			case "hex": 	this.game = new HexGame();
 							break;
 			case "sprouts":	//this.game = new SproutsGame();
 							break;
@@ -104,7 +104,9 @@ public class MCTSAgent extends GameAgent{
 			foundNode.expandNode(foundNode.b, game.getPossibleMoves(foundNode.b, foundNode.firstPlayer));
 		}
 		//System.out.println("Added child out of " + foundNode.unvisitedChildren.size() + " possibilities");
-		foundNode.children.add(foundNode.unvisitedChildren.remove(r.nextInt(foundNode.unvisitedChildren.size())));
+		if(foundNode.unvisitedChildren.size() > 0){
+			foundNode.children.add(foundNode.unvisitedChildren.remove(r.nextInt(foundNode.unvisitedChildren.size())));
+		}
 		//System.out.println("children size: " + foundNode.children.size());
 
 		// Run a random playout from the found node until the end of the game.
@@ -124,10 +126,15 @@ public class MCTSAgent extends GameAgent{
 			score = 0.5;
 		}*/
 
-		
-		int size = foundNode.b.getSize();
-		score += (size * size);
-		score = score / (size * size * 2);
+		// Normalize score depending on game
+		if(this.gameType.equals("go")){
+			int size = foundNode.b.getSize();
+			score += (size * size);
+			score = score / (size * size * 2);
+		}else if(this.gameType.equals("hex")){
+			score += 1;
+			score = score / 2;
+		}
 		
 
 		//System.out.println("backprop start");

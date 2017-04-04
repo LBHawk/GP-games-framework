@@ -16,7 +16,7 @@ public class JCommanderInput {
 	@Parameter(names = { "--size", "-s"}, description = "Size of game board (square) (9-19)")
 		private int boardSize = 9;
 
-	@Parameter(names = { "--game", "-g"}, description = "Type of game being played (go, hex, sprouts)")
+	@Parameter(names = { "--game", "-g"}, description = "Type of game being played (go, hex, sprouts)", required = true)
 		private String game = "go";
 
 	@Parameter(names = { "--time", "-t"}, description = "How long agents have to make a move")

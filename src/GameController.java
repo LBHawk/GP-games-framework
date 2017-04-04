@@ -44,7 +44,7 @@ public class GameController{
 			case "go": 		game = new GoGame();
 							System.out.println("made gogame");
 							break;
-			case "hex": 	//game = new HexGame();
+			case "hex": 	game = new HexGame();
 							break;
 			case "sprouts": //game = new SproutsGame();
 							break;
@@ -172,6 +172,7 @@ public class GameController{
 
 					String toWrite = moveNumber + " " + secondPlayer.getIterations() + "\n";
 
+					if(saveData){
 					try{
 						System.out.println(toWrite);
 						fws.get(1).write(toWrite);
@@ -180,6 +181,7 @@ public class GameController{
 					}catch(IOException e){
 						e.printStackTrace();
 						System.exit(-1);
+					}
 					}
 				}
 
@@ -197,6 +199,7 @@ public class GameController{
 
 					String toWrite = moveNumber + " " + secondPlayer.getIterations() + "\n";
 					
+					if(saveData){
 					try{
 						System.out.println(toWrite);
 						fws.get(2).write(toWrite);
@@ -205,6 +208,7 @@ public class GameController{
 					}catch(IOException e){
 						e.printStackTrace();
 						System.exit(-1);
+					}
 					}
 				}
 			}
@@ -219,15 +223,18 @@ public class GameController{
 			int gameScore = game.calculateScore(gameBoard);
 			System.out.println("Score: " + gameScore);
 
+			if(saveData){
 			try{
 				fws.get(0).write(gameScore + " ");
 				fws.get(0).flush();
 			}catch(IOException e){
 				e.printStackTrace();
 			}
+			}
 		}
 
 
+		if(saveData){
 		try{
 			fws.get(0).write("\n");
 			fws.get(0).flush();
@@ -240,6 +247,7 @@ public class GameController{
 			fws.get(2).close();
 		}catch(IOException e){
 			e.printStackTrace();
+		}
 		}
 
 		System.out.println("Game took " + moveNumber + " moves.");

@@ -33,7 +33,7 @@ public class ANNAgent extends GameAgent{
 			case "go": 		this.game = new GoGame();
 							System.out.println("made go game in agent");
 							break;
-			case "hex": 	//this.game = new HexGame();
+			case "hex": 	this.game = new HexGame();
 							break;
 			case "sprouts":	//this.game = new SproutsGame();
 							break;
@@ -52,20 +52,32 @@ public class ANNAgent extends GameAgent{
 	protected void setNetwork(int boardSize){
 		String path = "/home/h/hawkl/Documents/Thesis/thesis-code-hawkl/src/agents/";
 		String netName = "";
-		if(boardSize == 7){
-			netName = "7Go0.ser";
-		}else if(boardSize == 5){
-			netName = "5Go0.ser";
-		}else if(boardSize == 9){
-			netName = "9Go0.ser";
-		}else if(boardSize == 4){
-			netName = "4Go0.ser";
-		}else if(boardSize == 11){
-			netName = "11Go0.ser";
-		}else if(boardSize == 13){
-			netName = "13Go0.ser";
-		}else if(boardSize == 15){
-			netName = "15Go93.ser";
+		if(this.gameType.equals("go")){
+			switch(boardSize){
+				case 4:  netName = "4Go0.ser";
+					     break;
+				case 5:  netName = "5Go0.ser";
+						 break;
+				case 7:  netName = "7Go0.ser";
+						 break;
+				case 9:  netName = "9Go0.ser";
+						 break;
+				case 11: netName = "11Go0.ser";
+						 break;
+				case 13: netName = "13Go0.ser";
+ 						 break;
+				case 15: netName = "15Go93.ser";
+						 break;
+			}
+		}else if (this.gameType.equals("hex")){
+			switch(boardSize){
+				case 9:   netName = "9hex0.ser";
+					      break;
+				case 11:  netName = "11hex0.ser";
+						  break;
+				case 14:  netName = "14hex0.ser";
+						  break;
+			}
 		}
 
 		try {
@@ -181,9 +193,15 @@ public class ANNAgent extends GameAgent{
 		}*/
 
 		
-		int size = foundNode.b.getSize();
-		score += (size * size);
-		score = score / (size * size * 2);
+		// Normalize score depending on game
+		if(this.gameType.equals("go")){
+			int size = foundNode.b.getSize();
+			score += (size * size);
+			score = score / (size * size * 2);
+		}else if(this.gameType.equals("hex")){
+			score += 1;
+			score = score / 2;
+		}
 		
 
 		//System.out.println("backprop start");

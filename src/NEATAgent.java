@@ -34,7 +34,7 @@ public class NEATAgent extends GameAgent{
 			case "go": 		this.game = new GoGame();
 							System.out.println("made go game in agent");
 							break;
-			case "hex": 	//this.game = new HexGame();
+			case "hex": 	this.game = new HexGame();
 							break;
 			case "sprouts":	//this.game = new SproutsGame();
 							break;
@@ -275,9 +275,15 @@ public class NEATAgent extends GameAgent{
 		  }*/
 
 
-		int size = foundNode.b.getSize();
-		score += (size * size);
-		score = score / (size * size * 2);
+		// Normalize score depending on game
+		if(this.gameType.equals("go")){
+			int size = foundNode.b.getSize();
+			score += (size * size);
+			score = score / (size * size * 2);
+		}else if(this.gameType.equals("hex")){
+			score += 1;
+			score = score / 2;
+		}
 
 
 		//System.out.println("backprop start");

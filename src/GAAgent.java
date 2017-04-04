@@ -22,7 +22,7 @@ public class GAAgent extends GameAgent{
 			case "go": 		this.game = new GoGame();
 							System.out.println("made go game in agent");
 							break;
-			case "hex": 	//this.game = new HexGame();
+			case "hex": 	this.game = new HexGame();
 							break;
 			case "sprouts":	//this.game = new SproutsGame();
 							break;
@@ -175,7 +175,7 @@ public class GAAgent extends GameAgent{
 			double tempBest = n.score / n.games;
 
 			int[] huerVals = new int[5];
-			huerVals = agent.findValues(n.b, this.firstPlayer);
+			huerVals = agent.findValues(n.b, this.firstPlayer, this.gameType);
 			//System.out.println("UCT: " + tempBest);
 			double hueristic = 0.0;
 
@@ -266,9 +266,15 @@ public class GAAgent extends GameAgent{
 		}*/
 
 		
-		int size = foundNode.b.getSize();
-		score += (size * size);
-		score = score / (size * size * 2);
+		// Normalize score depending on game
+		if(this.gameType.equals("go")){
+			int size = foundNode.b.getSize();
+			score += (size * size);
+			score = score / (size * size * 2);
+		}else if(this.gameType.equals("hex")){
+			score += 1;
+			score = score / 2;
+		}
 		
 
 		//System.out.println("backprop start");
@@ -325,7 +331,7 @@ public class GAAgent extends GameAgent{
 			}
 			double tempBest = s.upperConfidenceBound(explorationConstant);
 			int[] huerVals = new int[5];
-			huerVals = agent.findValues(s.b, this.firstPlayer);
+			huerVals = agent.findValues(s.b, this.firstPlayer, this.gameType);
 			//System.out.println("UCT: " + tempBest);
 			double hueristic = 0.0;
 

@@ -15,21 +15,33 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
 public class NetworkTrainer{
-	public static Board[] boardSet;
-	public static double[][] fullSet;
+	public static Board[] boardSet; 		// Array of training boards
+	public static double[][] fullSet; 		// Network friendly array of boards
 	//public static double[][] trainingSet;
 	//public static double[][] testingSet;
-	public static double[][] ideal;
-	public static int BOARDSIZE;
-	public static int SIZE = 2500;
-	public static final double TRAININGRATIO = 0.75;
-	public static final int INCREMENT = 5;
+	public static double[][] ideal; 		// Ideal outputs for bourds
+	public static int BOARDSIZE; 			// Size of boards to train for
+	public static int SIZE = 2500; 			// Size of training data
+	//public static final double TRAININGRATIO = 0.75;
+	public static final int INCREMENT = 5; 	// Differences in numMoves of random boards
+	public static String gameType; 			// Type of game to train for
 
 	public static void main(String[] args){
-		BOARDSIZE = Integer.parseInt(args[0]);
-		if(args[1] != null){
-			SIZE = Integer.parseInt(args[1]);
+		if(args.length != 3){
+			System.out.println("------usage-------");
+			System.out.println("arg1: boardsize");
+			System.out.println("arg2: trainingset size");
+			System.out.println("arg3: gameType");
+			System.exit(-1);
 		}
+
+		// Parse commandline
+		BOARDSIZE = Integer.parseInt(args[0]);
+		SIZE = Integer.parseInt(args[1]);
+		gameType = args[2];
+
+		//--------------
+		// Initialize all vars
 
 		boardSet = new Board[SIZE];
 		for(int i = 0; i < SIZE; i++){
@@ -41,9 +53,24 @@ public class NetworkTrainer{
 		ideal = new double[SIZE][1];
 		Board tempBoard = new Board(BOARDSIZE);
 
-		Game game = new GoGame();
-		GameAgent agent = new MCTSAgent("go", false);
+		Game game = null;
+		if(gameType.equals("go")){
+			game = new GoGame();
+		}else if(gameType.equals("hex")){
+			game = new HexGame();
+		}else{
+			System.out.println("Invalid gametype");
+			System.exit(-1);
+		}
 
+		GameAgent agent = new MCTSAgent(gameType, false);
+
+		// Done initializing
+		//-------------
+
+
+
+		// Create random boards using helper from game class
 		int numSizes = 100 / INCREMENT;
 		int numSteps = SIZE / numSizes;
 		int moveTracker = 1;
@@ -62,6 +89,8 @@ public class NetworkTrainer{
 		System.out.println("Done creating boards");
 		//System.out.println("score est: " + agent.estimateNodesScore(boardSet[2500], 5000, 25));
 
+		// Find estimated value of boards for ideal output,
+		// Turn boards into network friendly form
 		double min = Double.POSITIVE_INFINITY;
 		double max = Double.NEGATIVE_INFINITY;
 		for(int i = 0; i < SIZE; i++){
@@ -88,6 +117,8 @@ public class NetworkTrainer{
 
 	}
 
+	// Train the networks on the training data
+	// until a low enough error is reached
 	public static void train(){
 		BasicNetwork network = new BasicNetwork();
 		network.addLayer(new BasicLayer(null,true,BOARDSIZE*BOARDSIZE));
@@ -138,24 +169,28 @@ public class NetworkTrainer{
 		Encog.getInstance().shutdown();
 	}
 
+	// Save the network to the harddisk
 	public static void serializeNetwork(BasicNetwork net, double finalErr){
 		System.out.println("Serializing");
 		String path = "/home/h/hawkl/Documents/Thesis/thesis-code-hawkl/src/";
 		int err = (int)(finalErr*10000.0);
 		try{
-			File file = new File(path + "agents/" + BOARDSIZE + "Go" + err + ".ser");
+			File file = new File(path + "agents/" + BOARDSIZE + gameType + err + ".ser");
 			file.createNewFile();
 			FileOutputStream fileOut = new FileOutputStream(file);
          	ObjectOutputStream out = new ObjectOutputStream(fileOut);
          	out.writeObject(net);
          	out.close();
          	fileOut.close();
-         	System.out.println("wrote network to: " + "/agents/" + BOARDSIZE + "Go" + err + ".ser");
+         	System.out.println("wrote network to: " + "/agents/" + BOARDSIZE + gameType + err + ".ser");
 		}catch(IOException e){
 			e.printStackTrace();
 		}
 	}
 
+	// Finds the range of set of doubles.
+	// Used to exit training when we are converging to an error above
+	// what we want from training (so we aren't training forever)
 	public static double range(double[] d){
 		double min = Double.POSITIVE_INFINITY;
 		double max = Double.NEGATIVE_INFINITY;
@@ -168,6 +203,8 @@ public class NetworkTrainer{
 		return max - min;
 	}
 
+	// Puts the board into a network friendly format (i.e. doubles) and adds to
+	// the training data array.
 	public static void setTraining(int index, Board b){
 		int count = 0;
 		for(int i = 0; i < BOARDSIZE; i++){
