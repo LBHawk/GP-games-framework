@@ -22,12 +22,16 @@
 \contentsline {figure}{\numberline {3.6}{\ignorespaces Hex heuristic properties\relax }}{41}
 \contentsline {figure}{\numberline {3.7}{\ignorespaces Structure of the game-playing framework\relax }}{47}
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Example Visualization\relax }}{50}
+\contentsline {figure}{\numberline {4.2}{\ignorespaces \texttt {GAAgent}'s and \texttt {ANNAgent}'s performance against \texttt {RandomAgent}\relax }}{51}
+\contentsline {figure}{\numberline {4.3}{\ignorespaces \texttt {GAAgent} vs \texttt {MCTSAgent} performance on different board sizes\relax }}{52}
+\contentsline {figure}{\numberline {4.4}{\ignorespaces \texttt {ANNAgent} and \texttt {GAAgent} on their more dominant board configurations\relax }}{53}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {A.1}{\ignorespaces \texttt {ANNAgent} vs \texttt {MCTSAgent} Go scores by board size and time allowance\relax }}{53}
-\contentsline {figure}{\numberline {A.2}{\ignorespaces \texttt {GAAgent} vs \texttt {MCTSAgent} Go scores by board size and time allowance\relax }}{54}
-\contentsline {figure}{\numberline {A.3}{\ignorespaces \texttt {GAAgent} vs \texttt {ANNAgent} Go scores by board size and time allowance\relax }}{55}
-\contentsline {figure}{\numberline {A.4}{\ignorespaces \texttt {MCTSAgent} vs \texttt {RandomAgent} Go scores by board size and time allowance\relax }}{56}
-\contentsline {figure}{\numberline {A.5}{\ignorespaces \texttt {ANNAgent} vs \texttt {RandomAgent} Go scores by board size and time allowance\relax }}{57}
-\contentsline {figure}{\numberline {A.6}{\ignorespaces \texttt {GAAgent} vs \texttt {RandomAgent} Go scores by board size and time allowance\relax }}{58}
-\addvspace {10\p@ }
+\contentsline {figure}{\numberline {A.1}{\ignorespaces Go Score Sample Graph\relax }}{60}
+\contentsline {figure}{\numberline {A.2}{\ignorespaces \texttt {ANNAgent} vs \texttt {MCTSAgent} Go scores by board size and time allowance\relax }}{61}
+\contentsline {figure}{\numberline {A.3}{\ignorespaces \texttt {GAAgent} vs \texttt {MCTSAgent} Go scores by board size and time allowance\relax }}{62}
+\contentsline {figure}{\numberline {A.4}{\ignorespaces \texttt {GAAgent} vs \texttt {ANNAgent} Go scores by board size and time allowance\relax }}{63}
+\contentsline {figure}{\numberline {A.5}{\ignorespaces \texttt {MCTSAgent} vs \texttt {RandomAgent} Go scores by board size and time allowance\relax }}{64}
+\contentsline {figure}{\numberline {A.6}{\ignorespaces \texttt {ANNAgent} vs \texttt {RandomAgent} Go scores by board size and time allowance\relax }}{65}
+\contentsline {figure}{\numberline {A.7}{\ignorespaces \texttt {GAAgent} vs \texttt {RandomAgent} Go scores by board size and time allowance\relax }}{66}

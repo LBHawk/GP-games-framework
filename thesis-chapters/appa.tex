@@ -6,6 +6,17 @@
 %   *******************************************************************
 
 \chapter{Data Visualizations}\label{appa:data}
+This Appendix contains the full set of data visualizations.  The graphs are presented in grids, with with each grid containing the playouts between two different agents; each grid contains all board sizes and time allowances for these agents.  They are organized with board size increasing left to right, and the time allowance increasing from top to bottom.  For example, 5x5 Go games with a 500ms time allowance are in the top-left corner of each grid, while 11x11 Go games with an 8000ms time allowance are in the bottom right.
+
+For a demonstration of how to read a graph containing the score information for a board configuration of Go, consider Figure\ref{fig:apex}.  In addition to giving the board size and time allowance of the game, the graph is titled in order of player; that is, it is formatted as `Player one' vs `Player two'.  This distinction is important to properly understand the score.  The x-axis is how many moves have been made in a game, and the y-axis notates the score of the game at that point.  Each colored line on the graph represents a single, distinct playout of the game.  A positive score is good for Player one, and a negative score is good for Player 2.  The grey smooth curve represents the average score at each move across all games of that type.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.6]{images/Visualizations/ANNvsMCTS/2000ms9x9.png}
+  \caption{Go Score Sample Graph}
+  \label{fig:apex}
+\end{figure}
+
 \begin{figure}
 \centering
 \begin{tabular}{cccc}
@@ -198,7 +209,7 @@
 \label{app:garandscore}
 \end{figure}
 
-
+\begin{comment}
 \chapter{Java Code}\label{appa:code}
 All program code should be fully commented. Authorship
 of all parts of the code should be clearly specified. 
@@ -248,3 +259,4 @@ of all parts of the code should be clearly specified.
 \lstinputlisting[caption=RandomAgent.java]{../src/RandomAgent.java}
 
 \lstinputlisting[caption=TestNetworks.java]{../src/TestNetworks.java}
+\end{comment}

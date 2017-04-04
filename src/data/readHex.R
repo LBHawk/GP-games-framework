@@ -62,3 +62,4 @@ consolidate <- function(){
   
   return(fin)
 }
+

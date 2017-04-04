@@ -6,15 +6,19 @@
 %   *******************************************************************
 %
 
-\chapter{Discussion and Future Work}\label{ch:conclusion}
-
-This chapter usually contains the following items, although not
-necessarily in this order or sectioned this way in particular.
-
-\section{Summary of Results}
-A discussion of the significance of the results
-and a review of claims and contributions.
-
+\chapter{Summary}\label{ch:conclusion}
 \section{Future Work}
+Most improvements to our work are needed in the games classes.  Since each agent utilizes methods in the game classes for the MCTS process, any improvements to the algorithms within the games classes will immediately lead to a performance boost in each agent.  The most needed improvement is on the \texttt{boardResolution} method of the Go class.  The algorithm has a very high time-complexity, and is called in every iteration of MCTS; this combination leads to an agent's performance becoming exponentially worse as board size increases.
+
+Beyond this, we would like to test agents with better trained neural networks.  To train each neural network, we used only 2500 pieces of data; this is an admittedly small training set.  These networks were able to provide the agent with a noticeable performance boost, but it would be interesting to see how much better performance would be with a more reliable network.
 
 \section{Conclusion}
+We have implemented a new general-purpose game playing framework for two-player turn-based board games.  The framework supports both human and computer players, and is completely uncoupled from any game-specific functionality; new games can be designed and played on the framework with almost no change to the existing codebase.  We also implemented the games Go and Hex for the framework.  We then created one trivial and four intelligent general-purpose game playing agents.  Similar to the entire framework, the agents contain no game-specific functionality and could be used with any games that run on our platform.
+
+The trivial agent is called \texttt{RandomAgent}, and simply performs random moves on the board.  The first intelligent agent is called \texttt{MCTSAgent}, and utilizes Monte-Carlo Tree Search as its decision-making algorithm.  After these agents were implemented, we created the following three agents: \texttt{GAAgent}, \texttt{ANNAgent}, and \texttt{NEATAgent}; for this, we heavily employed the Encog machine learning framework.  Each of these agents utilize their respective machine learning technique to alter the standard MCTS algorithm, following the proposals of several different previous researchers.
+
+We used our framework and game implementations to perform novel research on these agents.  While they're respective algorithms have been compared to a standard MCTS algorithm and were found to improve on its performance, these experiments were often done in different environments and under different conditions.  Furthermore, agents utilizing these algorithms had never before been directly compared to one another --- we provide this direct comparison.  We ran a series of experiments between each agent on the games Go and Hex with a variable board size and MCTS time allowance.  These parameters provide different branching factors for the games, and overall MCTS iteration restrictions, respectively.  Varying these parameters provides the most applicable real-world results.
+
+The data from our experiments uncovered some very clear performance trends.  Particularly, the \texttt{ANNAgent} provided a moderate boost in performance that was independent of both board size and time allowance.  This makes it a reliable choice with which to improve MCTS.  The \texttt{GAAgent}'s performance was more variable.  While it had the potential to provide a higher performance boost than the \texttt{ANNAgent} under certain circumstances, its performance was very weak in others.  Specifically, we found that the \texttt{GAAgent}'s performance had a positive correlation with time allowance, and a negative correlation with board size.
+
+Our research provides new data on an algorithm which is currently heavily used in the field of artificial intelligence.  Beyond this, the framework we have implemented has the potential to make similar future research in this area much more straight-forward.
