@@ -1,0 +1,156 @@
+\documentclass{beamer}
+%\documentclass[handout]{beamer}
+
+\usetheme[language=english,framenumber,totalframenumber]{AlleghenyCollege}
+\usepackage{tikz}
+
+\title{Intelligent Monte-Carlo Tree Search in Perfect Information Games}
+\subtitle{Proposal Defense}
+\author{Lucas Hawk}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%%%%%%%%%%%% Slide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Artificial Intelligence Development and Testing}
+\onslide<1-> A major long-term goal of AI research is to develop a system with general intelligence.  How do we move towards this goal?
+\begin{itemize}
+\onslide<2-> \item Robots
+\begin{itemize}
+\onslide<3-> \item Expensive and time consuming
+\onslide<3-> \item Physical limitations
+\end{itemize}
+\onslide<4-> \item We need a more testable and controllable environment
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{The Role of Games}
+\onslide<1-> Computer games --- specifically perfect information games --- act as a perfect environment.
+\begin{itemize}
+\onslide<2-> \item Extremely controllable
+\onslide<2-> \item Clear goal for players
+\onslide<2-> \item Simple programming, complex decision-making
+\onslide<2-> \item Easy to benchmark AI against humans
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Monte-Carlo Tree Search (MCTS)}
+\vspace{-0.75in}
+\begin{center}
+\includegraphics[clip, trim={0 4cm 0 5cm}, scale=.5]{images/mcts.jpg}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{Why MCTS?}
+\begin{itemize}
+\item ``Anytime algorithm''
+\item Does not require knowledge of strategy for a game
+\item Balances exploration and exploitation
+\end{itemize}
+\onslide<2-> \[UCT = v_i +C\sqrt{\frac{2\ln N}{n_i}}\]
+\onslide<3-> Performance can be enhanced through integration of various AI algorithms
+\end{frame}
+
+\begin{frame}
+\frametitle{AI Integration}
+\vspace{-0.25in}
+\begin{center}
+Genetic Algorithms\\
+\includegraphics[scale=.25]{images/ga1.png}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{AI Integration}
+\vspace{-0.25in}
+\begin{center}
+Artificial Neural Networks\\
+\input{anntikz}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{AI Integration}
+\vspace{-0.25in}
+\begin{center}
+Neuro-Evolution\\
+\includegraphics[scale=.75]{images/hyperneatnets2.png}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{AI Integration}
+\vspace{-0.25in}
+\begin{center}
+Deep Convolutional Networks\\
+\includegraphics[scale=.4]{images/cnnfull.png}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{Existing Implementations}
+\begin{itemize}
+\onslide<1-> \item Rapid Evolution
+\begin{itemize}
+\onslide<1-> \item Successful in 99/100 plays of ``Mountain Car''
+\end{itemize}
+%
+\onslide<2-> \item ANN Tree Pruning
+\begin{itemize}
+\onslide<2-> \item Performs better in 5x5 Go-Moku than standard MCTS --- no specific win-rate given
+\end{itemize}
+%
+\onslide<3-> \item NEAT/HyperNEAT
+\begin{itemize}
+\onslide<3-> \item HyperNEAT was successful against standard MCTS on 7x7 Go when trained on 5x5 Go
+\end{itemize}
+%
+\onslide<4-> \item AlphaGo
+\begin{itemize}
+\onslide<4-> \item First program to defeat a professional Go player in a set of 5 games of 19x19 Go
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Our Research}
+Provide a direct comparison between these different enhancements of MCTS.
+\begin{itemize}
+\item Direct competition on several configurations of different games (Go, Hex, Sprouts)
+\item Clearly establish differences in performance
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Experimentation Framework}
+Three types of tests
+\begin{itemize}
+\item Standard experiments --- direct comparison on same games
+\item ``Scalability'' experiments --- does training generalize?
+\item ``Outperformance threshold'' experiments --- time-per-move doubling experiment
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{In Summary}
+\begin{itemize}
+\item MCTS is currently the ``golden standard'' for intelligent game-playing agents
+\begin{itemize}
+\item It can be enhanced through the integration of various AI algorithms
+\end{itemize}
+\item These different enhancements have not been directly compared
+\item We seek to fill this hole in research and highlight the differences in performance through 3 distinct types of experiments
+\end{itemize}
+\end{frame}
+
+\end{document}

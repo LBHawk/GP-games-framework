@@ -1,0 +1,55 @@
+% Created by Janyl Jumadinova, July 2013 
+% Modified from:
+%
+% Copyright 2012 Pieter Belmans
+% https://github.com/pbelmans/ugent-beamer
+%
+% Based on Nico Schlömer's ua-beamer (https://github.com/nschloe/ua-beamer)
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU Public License.
+
+\RequirePackage{ifthen}
+
+\mode<presentation>
+
+\input{colors}
+
+\ifbeamer@faculty\colorlet{allegheny-faculty}{allegheny-\beamer@facultyvalue}\fi
+
+% switch between the generic yellow use of highlights or faculty specific colors
+\ifthenelse{ \boolean{beamer@faculty} \AND \boolean{beamer@usefacultycolors} }
+{
+  \colorlet{alleghenyalert}  {allegheny-faculty}
+  \colorlet{alleghenyexample}{alleghenyblue}
+}
+{
+  \colorlet{alleghenyalert}  {alleghenyyellow}
+  \colorlet{alleghenyexample}{alleghenyblue}
+}
+
+
+% general colors
+\setbeamercolor{structure}           {fg = alleghenyblue}%
+\setbeamercolor{normal text}         {fg = alleghenyblue}%
+\setbeamercolor{frametitle}          {fg = alleghenyblue}%
+\setbeamercolor{frame number in foot}{fg = alleghenyblue}%
+\setbeamercolor{subtitle}            {fg = alleghenyyellow}%
+\setbeamercolor{author}              {fg = alleghenyblue}%
+
+% alert color
+\setbeamercolor{alerted text}{fg=alleghenyalert}
+
+% blocks
+\setbeamercolor{block title}{use=structure,fg=white,bg=alleghenyblue}
+\setbeamercolor{block title alerted}{use=alerted text,fg=white,bg=alleghenyalert}
+\setbeamercolor{block title example}{use=example text,fg=white,bg=alleghenyexample}
+
+\setbeamercolor{block body}        {fg=alleghenyblue,use=block title,bg=alleghenyblue!10!white}
+\setbeamercolor{block body alerted}{fg=alleghenyblue,use=block title alerted,bg=alleghenyalert!10!white}
+\setbeamercolor{block body example}{fg=alleghenyblue,use=block title example,bg=alleghenyexample!10!white}
+
+\mode
+<all>
