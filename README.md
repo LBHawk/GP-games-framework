@@ -15,8 +15,8 @@ Dependencies
 ------------
 
 Compilation requires two external libraries:
-  JCommander (https://mvnrepository.com/artifact/com.beust/jcommander/1.27)
-  Encog (https://github.com/encog/encog-java-core)
+- JCommander (https://mvnrepository.com/artifact/com.beust/jcommander/1.27)
+- Encog (https://github.com/encog/encog-java-core)
 
 Thesis
 ----------
