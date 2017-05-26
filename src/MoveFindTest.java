@@ -1,3 +1,4 @@
+// For debug
 public class MoveFindTest{
 	public static void main(String [] args){
 		Game game = new GoGame();

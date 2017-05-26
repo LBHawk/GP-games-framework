@@ -9,6 +9,7 @@ public class GAWeight{
 	private Random r;
 	private double score;
 
+	// Initializes the weight vector with random values
 	public GAWeight(){
 		r = new Random();
 		netStones = r.nextDouble() * 2 - 1;
@@ -64,6 +65,7 @@ public class GAWeight{
 		badAtari = weights[4];
 	}
 
+	// Find the values of each heuristic
 	public int[] findValues(Board b, boolean firstPlayer, String gameType){
 		int temp = 0;
 		// 0: netStone, 1: goodLibs, 2: badLibs, 3: goodAtari, 4: badAtari
@@ -74,6 +76,7 @@ public class GAWeight{
 			finalVals[i] = 0;
 		}
 
+		// Track which piece is the player's and which is the opponent's
 		char goodChar = ' ';
 		char badChar = ' ';
 		if(firstPlayer){
@@ -84,6 +87,7 @@ public class GAWeight{
 			badChar = 'O';
 		}
 
+		// Find go heuristics
 		if(gameType.equals("go")){
 			for(int i = 0; i < b.getSize(); i++){
 				for(int j = 0; j < b.getSize(); j++){
@@ -137,6 +141,7 @@ public class GAWeight{
 					}
 				}
 			}
+		// Find hex heuristics
 		}else if(gameType.equals("hex")){
 			for(int i = 0; i < b.getSize(); i++){
 				for(int j = 0; j < b.getSize(); j++){
@@ -164,6 +169,7 @@ public class GAWeight{
 		return finalVals;
 	}
 
+	// Finds the largest connected region on the board iteratively
 	private int findConnected(char[][] b, char piece){
 		boolean[][] connected = new boolean[b.length][b.length];
 
@@ -254,6 +260,7 @@ public class GAWeight{
 		return maxConn;
 	}
 
+	// Finds the 'deepest' row/col reached on the board by the player (i.e. the furthest row reached from one side)
 	private int findDeepest(char[][] b, boolean white){
 		boolean[][] connected = new boolean[b.length][b.length];
 

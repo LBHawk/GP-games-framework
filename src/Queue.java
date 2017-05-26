@@ -1,6 +1,7 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+// Pretty standard queue implementation
 public class Queue<Item> implements Iterable<Item>{
 	private QNode<Item> first;    // beginning of queue
 	private QNode<Item> last;     // end of queue

@@ -21,9 +21,13 @@ public abstract class GameAgent{
 		this.r = new Random();
 	}
 
+	// Actual MCTS process
 	protected abstract void select(Node currentNode, int moveNumber);	
+	// Set ANN if applicable
 	protected abstract void setNetwork(int boardSize);
+	// Move selection called from controller
 	protected abstract Board makeMove(Board board, int timeAllowed, int moveNumber);
+	// For training purposes
 	protected abstract double estimateNodesScore(Board board, int iterations, int moveNumber);
 	
 	// Checks the integrity of the move made (Only 0 or 1 pieces placed)

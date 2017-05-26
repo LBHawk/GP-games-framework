@@ -17,14 +17,15 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
+// ANNAgent uses an artificial neural network to prune the game tree at each turn before the MCTS process
 public class ANNAgent extends GameAgent{
-	private Game game;
-	private boolean firstPlayer;
-	private Random r;
-	private double explorationConstant = Math.sqrt(2.0);
-	private String gameType;
-	private BasicNetwork network;
-	private int iterations;
+	private Game game; 										// For use in MCTS
+	private boolean firstPlayer;							// Tracks which player
+	private Random r; 		
+	private double explorationConstant = Math.sqrt(2.0); 	// C value for MCTS, standard is sqrt(2)
+	private String gameType; 								
+	private BasicNetwork network;							// Reference to ANN being used
+	private int iterations; 								// Tracks iterations taken each turn
 
 	public ANNAgent(String game, boolean firstPlayer){
 		super(game, firstPlayer);
@@ -43,11 +44,13 @@ public class ANNAgent extends GameAgent{
 		System.out.println("MCTS const");
 	}
 
+	// For data output
 	@Override
 	protected int getIterations(){
 		return this.iterations;
 	}
 
+	// Handles the ANN assignment at the creation of the agent
 	@Override
 	protected void setNetwork(int boardSize){
 		String path = "/home/h/hawkl/Documents/Thesis/thesis-code-hawkl/src/agents/";
@@ -99,30 +102,38 @@ public class ANNAgent extends GameAgent{
 		}
 	}
 
+	// Begins the move selection process.  This is what is called from the controller, but this uses the select method to begin the actual mcts
 	@Override
 	protected Board makeMove(Board startingBoard, int timeAllowed, int moveNumber){
 		//System.out.println("In makeMove");
+		// Begin making tree, essentially
 		Node rootNode = new Node(startingBoard, firstPlayer);
 		Board bestMoveFound = null;
 
+		// set time/iteration tracker
 		long startTime = System.currentTimeMillis();
 		this.iterations = 0;
 
+		// Ensures the root node has a list of children before beginning MCTS
 		if(rootNode.unvisitedChildren == null){
 			//System.out.println("null unvis");
 			rootNode.expandNode(rootNode.b, game.getPossibleMoves(rootNode.b, rootNode.firstPlayer));
 		}
 
+		// Before beginning MCTS, prune the tree
 		pruneNodes(rootNode, moveNumber, startingBoard.getSize());
 
+		// MCTS
 		while(System.currentTimeMillis() - startTime < timeAllowed){
 			select(rootNode, moveNumber);
 			iterations++;
 			//System.out.println(iterations);
 		}
+		// MCTS done
 
 		System.out.println("Made move after " + iterations + "iterations thru MCTS.");
 
+		// Find child node with highest score
 		double bestScore = Double.NEGATIVE_INFINITY;
 		ArrayList<Node> bestNodes = new ArrayList<Node>();
 		for(Node n : rootNode.children){
@@ -140,6 +151,7 @@ public class ANNAgent extends GameAgent{
 
 		}
 
+		// If multiple nodes have same score, pick one randomly
 		Node move = bestNodes.get(r.nextInt(bestNodes.size()));
 		System.out.println("+++++++ " + (move.score / move.games) + " / " + move.games);
 		return move.b;
@@ -213,14 +225,17 @@ public class ANNAgent extends GameAgent{
 
 	private Node treePolicy(Node node) {
 		//System.out.println("In treePolicy");
+		// Ensure the node has children to explore
 		if (node.unvisitedChildren == null) {
 			node.expandNode(node.b, game.getPossibleMoves(node.b, node.firstPlayer));
 		}
 
+		// The node has no children (we have reached a terminal pos)
 		if(!node.unvisitedChildren.isEmpty()){
 			return node;
 		}
 
+		// Find best child to expand on
 		ArrayList<Node> bestNodes = new ArrayList<Node>();
 		bestNodes = findBest(node, explorationConstant);
 
@@ -276,6 +291,7 @@ public class ANNAgent extends GameAgent{
 		return bestNodes;
 	}
 
+	// Removes a number of nodes from the search tree prior to MCTS
 	private void pruneNodes(Node root, int moveNumber, int boardSize){
 		// Copy list of unexplored nodes
 		ArrayList<Node> unexplored = new ArrayList<Node>();
@@ -323,7 +339,7 @@ public class ANNAgent extends GameAgent{
 		int numToPrune = (int)(unexplored.size() * percentPrune);
 		ArrayList<Integer> pruningIndices = new ArrayList<Integer>();
 
-		// Find the indices of the least valuable children
+		// Find the indices of the least valuable children (necessary to remove in proper order)
 		for(int i = 0; i < numToPrune; i++){
 			double min = Double.POSITIVE_INFINITY;
 			double max = Double.NEGATIVE_INFINITY;

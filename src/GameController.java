@@ -10,11 +10,11 @@ import com.beust.jcommander.JCommander;
 public class GameController{
 
 	static int boardSize;
-	static boolean firstPlayerHuman; 	// Is first player human
-	static boolean secondPlayerHuman; 	// Is second player human
-	static boolean gameOver; 			// Is the game over?
-	static boolean turn; 				// Which player's turn is it
-	static int timeAllowed; 			// How long do agent's have to make a move
+	static boolean firstPlayerHuman; 		 // Is first player human
+	static boolean secondPlayerHuman; 		 // Is second player human
+	static boolean gameOver; 				 // Is the game over?
+	static boolean turn; 					 // Which player's turn is it
+	static int timeAllowed; 				 // How long do agent's have to make a move
 	static final boolean KILLHUMANS = false; // !!!!DO NOT CHANGE!!!!
 
 	public static void main(String [] args){
@@ -164,24 +164,25 @@ public class GameController{
 					playPiece(play, gameBoard);
 				}else{
 					//System.out.println("!!!!!!!!!");
+					// Ask agent to make move, set board to the move the agent returns
 					Board theBoard = new Board(gameBoard.getSize());
 					theBoard = firstPlayer.makeMove(gameBoard, timeAllowed, moveNumber);
 					gameBoard.setBoard(theBoard.getBoard());
 					turn = !turn;
 					System.out.println("turn done");
 
+					// Record data if needed
 					String toWrite = moveNumber + " " + secondPlayer.getIterations() + "\n";
-
 					if(saveData){
-					try{
-						System.out.println(toWrite);
-						fws.get(1).write(toWrite);
-						fws.get(1).flush();
-						System.out.println("WROTE");
-					}catch(IOException e){
-						e.printStackTrace();
-						System.exit(-1);
-					}
+						try{
+							System.out.println(toWrite);
+							fws.get(1).write(toWrite);
+							fws.get(1).flush();
+							System.out.println("WROTE");
+						}catch(IOException e){
+							e.printStackTrace();
+							System.exit(-1);
+						}
 					}
 				}
 
@@ -191,6 +192,7 @@ public class GameController{
 					play = s.next();
 					playPiece(play, gameBoard);
 				}else{
+					// Ask agent to make move, set board to the move the agent returns
 					Board theBoard = new Board(gameBoard.getSize());
 					theBoard = secondPlayer.makeMove(gameBoard, timeAllowed, moveNumber);
 					gameBoard.setBoard(theBoard.getBoard());
@@ -199,61 +201,66 @@ public class GameController{
 
 					String toWrite = moveNumber + " " + secondPlayer.getIterations() + "\n";
 					
+					// Record data if needed
 					if(saveData){
-					try{
-						System.out.println(toWrite);
-						fws.get(2).write(toWrite);
-						fws.get(2).flush();
-						System.out.println("WROTE");
-					}catch(IOException e){
-						e.printStackTrace();
-						System.exit(-1);
-					}
+						try{
+							System.out.println(toWrite);
+							fws.get(2).write(toWrite);
+							fws.get(2).flush();
+							System.out.println("WROTE");
+						}catch(IOException e){
+							e.printStackTrace();
+							System.exit(-1);
+						}
 					}
 				}
 			}
 			
+			// Resolve the board (i.e. remove pieces / change board between turns if game feature)
 			Board resolvedBoard = new Board(boardSize);
 			resolvedBoard.setBoard(game.resolveBoard(gameBoard, boardSize).getBoard());
-
 			gameBoard.setBoard(resolvedBoard.getBoard());
 
+			// Check if game is complete, calculate score
 			moveNumber++;
 			if(game.gameFinished(gameBoard, moveNumber)){ gameOver = true; }
 			int gameScore = game.calculateScore(gameBoard);
 			System.out.println("Score: " + gameScore);
 
+			// Record score if needed
 			if(saveData){
+				try{
+					fws.get(0).write(gameScore + " ");
+					fws.get(0).flush();
+				}catch(IOException e){
+					e.printStackTrace();
+				}
+			}
+		}
+
+
+		// Close all file writers
+		if(saveData){
 			try{
-				fws.get(0).write(gameScore + " ");
+				fws.get(0).write("\n");
 				fws.get(0).flush();
+				fws.get(0).close();
+				//fws.get(1).write("\n");
+				fws.get(1).flush();
+				fws.get(1).close();
+				//fws.get(2).write("\n");
+				fws.get(2).flush();
+				fws.get(2).close();
 			}catch(IOException e){
 				e.printStackTrace();
 			}
-			}
-		}
-
-
-		if(saveData){
-		try{
-			fws.get(0).write("\n");
-			fws.get(0).flush();
-			fws.get(0).close();
-			//fws.get(1).write("\n");
-			fws.get(1).flush();
-			fws.get(1).close();
-			//fws.get(2).write("\n");
-			fws.get(2).flush();
-			fws.get(2).close();
-		}catch(IOException e){
-			e.printStackTrace();
-		}
 		}
 
 		System.out.println("Game took " + moveNumber + " moves.");
 		gameBoard.printBoard();		
 	}
 
+	// Ensure input is appropriate for board (only used for human play)
 	public static boolean checkInput(String in){
 		if(in.length() != 2){
 			return false;
@@ -277,6 +284,7 @@ public class GameController{
 		return true;
 	}
 
+	// Put piece on board (Only used for human play)
 	public static void playPiece(String play, Board gameBoard){
 		if(checkInput(play)){ 	// Check the input given
 			// Attempt to put the piece on the board

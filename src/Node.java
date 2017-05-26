@@ -14,11 +14,7 @@ public class Node implements Comparable<Node>{
 	public Board b;
 	public boolean firstPlayer;
 
-	/**
-	 * This creates the root node
-	 * 
-	 * @param b
-	 */
+	// Creates root nodes
 	public Node(Board b, boolean firstPlayer) {
 		children = new ArrayList<Node>();
 		prunedChildren = new ArrayList<Node>();
@@ -28,13 +24,7 @@ public class Node implements Comparable<Node>{
 		this.parent = null;
 	}
 
-	/**
-	 * This creates non-root nodes
-	 * 
-	 * @param b
-	 * @param m
-	 * @param prnt
-	 */
+	// This creates non-root nodes
 	public Node(Board b, Node prnt) {
 		children = new ArrayList<Node>();
 		parent = prnt;
@@ -44,15 +34,8 @@ public class Node implements Comparable<Node>{
 		this.b = b;
 	}
 
-	/**
-	 * Return the upper confidence bound of this state
-	 * 
-	 * @param c
-	 *            typically sqrt(2). Increase to emphasize exploration. Decrease
-	 *            to incr. exploitation
-	 * @param t
-	 * @return
-	 */
+
+	// Return the upper confidence bound of this state
 	public double upperConfidenceBound(double c) {
 		if(this.parent == null){
 			return (score / games + c * Math.sqrt(Math.log(1) / games));
@@ -60,11 +43,7 @@ public class Node implements Comparable<Node>{
 		return (score / games + c * Math.sqrt(Math.log(parent.games + 1) / games));
 	}
 
-	/**
-	 * Update the tree with the new score.
-	 * 
-	 * @param scr
-	 */
+	// Update the tree with the new score.
 	public void backPropagateScore(double scr) {
 		this.games ++;
 		this.score += scr;
@@ -74,11 +53,7 @@ public class Node implements Comparable<Node>{
 		}
 	}
 
-	/**
-	 * Expand this node by populating its list of unvisited child nodes.
-	 * 
-	 * @param currentBoard
-	 */
+	// Expand this node by populating its list of unvisited child nodes.
 	public void expandNode(Board currentBoard, ArrayList<Board> legalMoves) {
 		unvisitedChildren = new ArrayList<Node>();
 		for (int i = 0; i < legalMoves.size(); i++) {
@@ -87,6 +62,7 @@ public class Node implements Comparable<Node>{
 		}
 	}
 
+	// Remove some children from the search tree (used by annagent)
 	public void prune(ArrayList<Integer> indices){
 		// Sort the indices in decreasing order
 		int temp;

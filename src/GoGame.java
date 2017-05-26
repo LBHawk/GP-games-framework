@@ -54,10 +54,7 @@ public class GoGame extends Game{
 
 	@Override
 	public boolean gameFinished(Board board, int moveNumber){
-		// TODO
-		// Need score implemented for more sophisticated way of determining
-		// if game is finished other than "no more possible moves"
-		// (This is an unrealistic end condition)
+		// Game ends at 250 moves or when there are no moves remaining for either player
 		if(moveNumber >= 250){
 			return true;
 		}
@@ -113,8 +110,7 @@ public class GoGame extends Game{
 
 	@Override
 	public int calculateScore(Board board){
-		// TODO
-		// Figure out a way to do area scoring effectively
+		// Scoring is simple stone scoring
 		int score = 0;
 		int length = board.getBoard().length;
 		for(int i = 0; i < length; i++){

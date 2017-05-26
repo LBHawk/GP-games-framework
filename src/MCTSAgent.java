@@ -92,7 +92,6 @@ public class MCTSAgent extends GameAgent{
 
 	@Override
 	protected void select(Node currentNode, int moveNumber) {
-		//System.out.println("In Select");
 		// Begin tree policy. Traverse down the tree and expand. Return
 		// the new node or the deepest node it could reach. Return too
 		// a board matching the returned node.
@@ -100,18 +99,16 @@ public class MCTSAgent extends GameAgent{
 
 		// Expand foundNode to random unvisited node
 		if(foundNode.unvisitedChildren == null){
-			//System.out.println("null unvis");
 			foundNode.expandNode(foundNode.b, game.getPossibleMoves(foundNode.b, foundNode.firstPlayer));
 		}
-		//System.out.println("Added child out of " + foundNode.unvisitedChildren.size() + " possibilities");
+
 		if(foundNode.unvisitedChildren.size() > 0){
 			foundNode.children.add(foundNode.unvisitedChildren.remove(r.nextInt(foundNode.unvisitedChildren.size())));
 		}
-		//System.out.println("children size: " + foundNode.children.size());
 
 		// Run a random playout from the found node until the end of the game.
-		//System.out.println("starting playout");
 		double score = game.randomPlayout(foundNode.b, !foundNode.firstPlayer, moveNumber);
+
 		// If the agent is player 2, negative scores are good for p2
 		if(this.firstPlayer){
 			score = score * -1;
@@ -159,7 +156,6 @@ public class MCTSAgent extends GameAgent{
 
 		if (bestNodes.size() == 0) {
 			// The node must be a terminal node (first iteration of this node)
-			//System.out.println("bestnodes 0");
 			return node;
 
 		}
@@ -180,32 +176,27 @@ public class MCTSAgent extends GameAgent{
 		// Update list of best options as we go as well.
 		while(!nodes.isEmpty()){
 			Node s = nodes.dequeue();
+
 			for(Node node : s.children){
 				if (node.unvisitedChildren == null) {
 					node.expandNode(node.b, game.getPossibleMoves(node.b, !node.parent.firstPlayer));
 				}
 				nodes.enqueue(node);
-				//System.out.println("enqueued new item, queue size:" + nodes.size());
 			}
+
 			double tempBest = s.upperConfidenceBound(explorationConstant);
-			//System.out.println(tempBest);
 
 			if ((tempBest > bestValue) && !s.unvisitedChildren.isEmpty()) {
 				// If we found a better node
 				bestNodes.clear();
 				bestNodes.add(s);
 				bestValue = tempBest;
-				//System.out.println("found new best");
 			} else if ((tempBest == bestValue) && !s.unvisitedChildren.isEmpty()) {
 				// If we found an equal node
-				//System.out.println("found new best");
 				bestNodes.add(s);
 			}
-			//System.out.println("!!!!!!!!!!!!!!");
 
 		}
-		//System.out.println("bestNodes size: " + bestNodes.size());
-		//System.out.println(bestValue);
 		return bestNodes;
 	}
 

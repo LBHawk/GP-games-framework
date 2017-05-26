@@ -7,12 +7,12 @@ public class GAAgent extends GameAgent{
 	private Game game;
 	private boolean firstPlayer;
 	private Random r;
-	private double explorationConstant = Math.sqrt(2);
+	private double explorationConstant = Math.sqrt(2); // C value for MCTS
 	private String gameType;
-	private HashMap<Integer, GAWeight> weights;
-	private int numGaWeights = 10;
+	private HashMap<Integer, GAWeight> weights; 	// Population for GA
+	private int numGaWeights = 10; 					// Population size for GA
 	private int iterationTrack;
-	private double hueristic = 0.3; 		// The amount of "weight" the heuristic analysis is given
+	private double hueristic = 0.3; 				// The amount of "weight" the heuristic analysis is given
 	private int iterations;
 
 	public GAAgent(String game, boolean firstPlayer){
@@ -35,6 +35,7 @@ public class GAAgent extends GameAgent{
 		//	explorationConstant = 2 * Math.sqrt(2.0);
 		//}
 
+		// Initialize population for GA
 		weights = new HashMap<Integer, GAWeight>();
 		GAWeight temp;
 		for(int i = 0; i < numGaWeights; i++){
@@ -57,7 +58,9 @@ public class GAAgent extends GameAgent{
 	private void evolveWeights(){
 		GAWeight[] agents = new GAWeight[numGaWeights];
 
-		double mutChance = 0.2;
+		double mutChance = 0.2; 	// Mutation probability during evo
+
+		// Scores will be between 0 and 1, we can initialize to -1
 		int firstWorst = -1;
 		int secondWorst = -1;
 		int firstBest = -1;
@@ -66,6 +69,7 @@ public class GAAgent extends GameAgent{
 		double min = Double.POSITIVE_INFINITY;
 		double max = Double.NEGATIVE_INFINITY;
 
+		// Find first worst/best agents
 		for(int i = 0; i < numGaWeights; i++){
 			agents[i] = new GAWeight();
 			agents[i] = weights.get(i);
@@ -83,6 +87,7 @@ public class GAAgent extends GameAgent{
 		min = Double.POSITIVE_INFINITY;
 		max = Double.NEGATIVE_INFINITY;
 
+		// Find second worst/best agents
 		for(int i = 0; i < numGaWeights; i++){
 			agents[i] = weights.get(i);
 			if(agents[i].getScore() < min && i != firstWorst){
@@ -96,6 +101,8 @@ public class GAAgent extends GameAgent{
 			}
 		}
 
+		// Create new agents to take place of worst performing agents.
+		// New agents are a crossover of 2 best agents
 		GAWeight newAgent;
 		double[] firstWeights = agents[firstBest].getAllWeights();
 		double[] secondWeights = agents[secondBest].getAllWeights();
@@ -116,6 +123,7 @@ public class GAAgent extends GameAgent{
 			}
 			newAgent.setAllWeights(tempWeights);
 
+			// Replace in hashmap
 			if(i == 0){
 				weights.put(firstWorst, newAgent);
 			}else{
@@ -123,6 +131,7 @@ public class GAAgent extends GameAgent{
 			}
 		}
 
+		// Reset all the scores before next round of evolution
 		GAWeight temp;
 		for(int i = 0; i < numGaWeights; i++){
 			temp = new GAWeight();
@@ -132,6 +141,7 @@ public class GAAgent extends GameAgent{
 		}
 	}
 
+	// Begins the MCTS process
 	@Override
 	protected Board makeMove(Board startingBoard, int timeAllowed, int moveNumber){
 		//System.out.println("In makeMove");
@@ -141,6 +151,7 @@ public class GAAgent extends GameAgent{
 		long startTime = System.currentTimeMillis();
 		this.iterations = 0;
 
+		// MCTS
 		while(System.currentTimeMillis() - startTime < timeAllowed){
 			select(rootNode, moveNumber);
 			iterations++;
@@ -150,11 +161,13 @@ public class GAAgent extends GameAgent{
 			}
 			//System.out.println(iterations);
 		}
+		// End MCTS
 
 		System.out.println("Made move after " + iterations + "iterations thru MCTS.");
 
 		GAWeight[] agents = new GAWeight[numGaWeights];
 
+		// Find best agent
 		int firstBest = -1;
 		double max = Double.NEGATIVE_INFINITY;
 		for(int i = 0; i < numGaWeights; i++){
@@ -169,9 +182,11 @@ public class GAAgent extends GameAgent{
 
 		GAWeight agent = weights.get(firstBest);
 
+		// Select a move, but bias the result with the best agent
 		double bestScore = Double.NEGATIVE_INFINITY;
 		ArrayList<Node> bestNodes = new ArrayList<Node>();
 		for(Node n : rootNode.children){
+			// Standard method of choosing move
 			double tempBest = n.score / n.games;
 
 			int[] huerVals = new int[5];
@@ -179,18 +194,16 @@ public class GAAgent extends GameAgent{
 			//System.out.println("UCT: " + tempBest);
 			double hueristic = 0.0;
 
+			// Calculate total hueristic score of each agent
 			hueristic += (agent.getNetStones() * huerVals[0]);
 			hueristic += (agent.getGoodLibs() * huerVals[1]);
 			hueristic += (agent.getBadLibs() * huerVals[2]);
 			hueristic += (agent.getGoodAtari() * huerVals[3]);
 			hueristic += (agent.getBadAtari() * huerVals[4]);
 
-			//System.out.print("PRENORM huer: " + hueristic);
+			// Normalize hueristic for more accurate bias, Weigh hueristic by 1/3, add to original score
 			hueristic = (hueristic + (n.b.getSize() * n.b.getSize())) / (2*n.b.getSize()*n.b.getSize());
-			//System.out.println(" POSTNORM huer: " + hueristic);
-		
 			hueristic = hueristic * 0.33;
-
 			tempBest += hueristic;
 
 			if (tempBest > bestScore) {
@@ -213,6 +226,7 @@ public class GAAgent extends GameAgent{
 		System.out.println();
 		*/
 
+		// Get best move
 		Node move = bestNodes.get(r.nextInt(bestNodes.size()));
 		System.out.println("+++++++ " + (move.score / move.games) + " / " + move.games);
 		return move.b;

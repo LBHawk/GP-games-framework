@@ -1,3 +1,4 @@
+// Used in go board resolution (makes things a little simpler)
 public class Pair{
 	private int x;
 	private int y;
